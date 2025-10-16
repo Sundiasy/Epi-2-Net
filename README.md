@@ -1,18 +1,5 @@
 # 🦠 Epi²Net
 
-<!-- <div align="center">
-
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-1.8+-ee4c2c.svg)](https://pytorch.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![arXiv](https://img.shields.io/badge/arXiv-Paper-b31b1b.svg)](https://arxiv.org)
-
-*A physics-informed deep learning framework for spatiotemporal epidemic forecasting using Neural Ordinary Differential Equations (Neural ODEs) and Graph Convolutional Networks (GCNs).*
-
-</div> -->
-
----
-
 ## 🌟 Highlights
 
 - **🧬 Physics-Informed Architecture**: Integrates epidemiological dynamics with deep learning through Neural ODEs
@@ -26,16 +13,6 @@
 ## 📖 Overview
 
 **Epi²Net** is a novel deep learning framework designed for accurate spatiotemporal forecasting of epidemic spread. By combining the flexibility of Neural ODEs with the spatial reasoning capabilities of Graph Convolutional Networks, Epi²Net captures both the temporal dynamics and spatial dependencies inherent in epidemic processes.
-
-<!-- ### Key Features
-
-- **Neural ODE Integration**: Continuous-time modeling of epidemic dynamics
-- **Graph-Based Spatial Modeling**: Captures inter-regional transmission patterns
-- **Latent Dynamics Learning**: Learns hidden epidemic drivers from data
-- **Multi-Horizon Forecasting**: Supports 3-day, 5-day, and 7-day ahead predictions
-- **Robust Training**: Adaptive learning rate scheduling and gradient clipping -->
-
----
 
 ## 🏗️ Architecture
 
@@ -178,93 +155,3 @@ Epi-2-Net/
 ├── models/                  # Saved models
 └── README.md                # This file
 ```
-
-<!-- ---
-
-## 🔬 Methodology
-
-### Neural ODE Framework
-
-Epi²Net models the latent epidemic dynamics as a continuous-time ODE:
-
-$$\frac{dz(t)}{dt} = f_\theta(z(t), A, t)$$
-
-where:
-- $z(t)$ is the latent state vector
-- $A$ is the graph adjacency matrix
-- $f_\theta$ is a neural network parameterized by $\theta$
-
-### Graph Convolutional Dynamics
-
-The ODE function incorporates spatial structure through diffusion convolution:
-
-$$f_\theta(z, A) = \sigma\left(\sum_{k=0}^K \theta_k (D^{-1}A)^k z\right)$$
-
-This captures multi-hop spatial dependencies between regions.
-
-### Training Objective
-
-The model is trained end-to-end by minimizing the forecasting loss:
-
-$$\mathcal{L} = \sum_{i=1}^N \| y_i - \hat{y}_i \|_2^2 + \lambda \|\theta\|_2^2$$ -->
-<!-- 
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-### Development Guidelines
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
----
-
-## 📚 Citation
-
-If you use Epi²Net in your research, please cite:
-
-```bibtex
-@article{epi2net2024,
-  title={Epi²Net: Physics-Informed Neural ODEs for Spatiotemporal Epidemic Forecasting},
-  author={Your Name},
-  journal={arXiv preprint arXiv:XXXX.XXXXX},
-  year={2024}
-}
-```
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- COVID-19 data provided by national health agencies
-- Built with [PyTorch](https://pytorch.org/) and [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/)
-- Neural ODE implementation based on [torchdiffeq](https://github.com/rtqichen/torchdiffeq)
-
----
-
-## 📧 Contact
-
-**Sundiasy** - [@Sundiasy](https://github.com/Sundiasy)
-
-Project Link: [https://github.com/Sundiasy/Epi-2-Net](https://github.com/Sundiasy/Epi-2-Net)
-
----
-
-<div align="center">
-
-**⭐ Star this repository if you find it helpful!**
-
-Made with ❤️ for epidemic research and public health
-
-</div> -->
