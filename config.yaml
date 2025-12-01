@@ -10,7 +10,7 @@ model:
   input_dim: 1 
   output_dim: 1
   latent_dim: 32
-  n_traj_samples: 3 
+  n_traj_samples: 1
   ode_method: dopri5
   odeint_atol: 0.0003
   odeint_rtol: 0.0003 

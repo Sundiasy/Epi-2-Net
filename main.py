@@ -106,7 +106,7 @@ if __name__ == '__main__':
     parser.add_argument('--test_pred_len', type=int, default=7, help='test pred len')
 
     parser.add_argument('--num_workers', type=int, default=10, help='data loader num workers')
-    parser.add_argument('--batch_size', type=int, default=32, help='batch size')
+    parser.add_argument('--batch_size', type=int, default=8, help='batch size')
     # GPU
     parser.add_argument('--use_multi_gpu', action='store_true', help='use multiple gpus', default=False)
     args, unknown = parser.parse_known_args()
