@@ -199,7 +199,7 @@ class ODEFunc(nn.Module):
             print("Invalid Filter Type")
         m,n = int(inputs.shape[0]/self.gamma.shape[0]),int(inputs.shape[1]/self.gamma.shape[1])
         G_H, G_W = self.gamma.shape
-        grad = (inputs.view(G_H, m, G_W, n) * self.gamma[:, None, :, None]).view(inputs.shape)
+        grad += (inputs.view(G_H, m, G_W, n) * self.gamma[:, None, :, None]).view(inputs.shape)
         # print(self.gamma[0,:16])
         # print(self.gamma[0,16:32])
         return grad
