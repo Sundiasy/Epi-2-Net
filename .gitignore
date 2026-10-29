@@ -1,0 +1,27 @@
+# Python and local tooling
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+.vscode/
+.env
+.env.*
+
+# Local experiment state (included in the migration archive)
+/models/
+/outputs/
+/logs/
+/tmp/
+/COVID_Network_Data_V3/
+/*.pdf
+/*.zip
+
+# Newly added datasets stay in the migration archive; dataset builders stay in Git.
+/dataset/**/*.csv
+/dataset/**/*.json
+/dataset/**/*.npy
+/dataset/**/*.npz
+/dataset/**/*.zip
+/dataset/**/*.xls
+/dataset/**/*.xlsx
+/dataset/**/*.tsv

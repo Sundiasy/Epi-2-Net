@@ -187,9 +187,6 @@ class ODEFunc(nn.Module):
         elif(self._filter_type == "adv"):
             grad = - self.ode_func_net_adv(inputs, self._supports_adv)
         elif(self._filter_type == "diff_adv"):
-            # grad = - coeff * self.ode_func_net_diff(inputs, self._supports)
-            # grad = - self.ode_func_net_adv(inputs, self._supports_adv)
-            # pass
             grad_diff = - coeff * self.ode_func_net_diff(inputs, self._supports)
             grad_adv = - self.ode_func_net_adv(inputs, self._supports_adv)
             grad = self.gated_fusion(grad_diff, grad_adv)
@@ -199,7 +196,7 @@ class ODEFunc(nn.Module):
             print("Invalid Filter Type")
         m,n = int(inputs.shape[0]/self.gamma.shape[0]),int(inputs.shape[1]/self.gamma.shape[1])
         G_H, G_W = self.gamma.shape
-        grad = (inputs.view(G_H, m, G_W, n) * self.gamma[:, None, :, None]).view(inputs.shape)
+        grad += (inputs.view(G_H, m, G_W, n) * self.gamma[:, None, :, None]).view(inputs.shape)
         # print(self.gamma[0,:16])
         # print(self.gamma[0,16:32])
         return grad

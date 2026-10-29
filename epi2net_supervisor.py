@@ -365,7 +365,7 @@ class Epi2NetSupervisor:
                 x, y = self._prepare_data(x, y)
                 output, fe = self.pgdenet_model(x,y,adj_x)
                 
-                seq_len=[3,5,7]
+                seq_len=[5,10]
                 mae, mape, rmse = [], [], []
 
                 for seq in seq_len:
@@ -380,8 +380,12 @@ class Epi2NetSupervisor:
 
                 y_truths.append(y.cpu())
                 y_preds.append(output.cpu())
-                np.save(self.args.root_path+'y_truths.npy', np.array(y_truths))
-                np.save(self.args.root_path+'y_preds.npy', np.array(y_preds))
+
+            if y_truths:
+                y_truths_cat = torch.cat(y_truths, dim=1)
+                y_preds_cat = torch.cat(y_preds, dim=1)
+                np.save(self.args.root_path + 'y_truths.npy', y_truths_cat.numpy())
+                np.save(self.args.root_path + 'y_preds.npy', y_preds_cat.numpy())
 
             mean_loss = {
                 'mae': np.mean(mae_losses, axis=0),

@@ -23,7 +23,7 @@ model:
   nfe: false
 
 train:
-  base_lr: 0.05 #italy france england spain 0.05, france 0.07
+  base_lr: 0.005 #italy france england spain 0.05, france 0.07
   weight_decay: 0.5 
   dropout: 0
   load: 0 
