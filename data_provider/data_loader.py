@@ -2,16 +2,8 @@ import os
 import datetime
 import numpy as np
 import pandas as pd
-import json
 import torch
 from torch.utils.data import Dataset
-from data_provider.graph_utils import (
-    adjacency_from_payload,
-    build_distance_weight_matrix,
-    build_gravity_weight_matrix,
-    get_population_vector,
-    load_region_dataframe,
-)
 from data_provider.m4 import M4Dataset, M4Meta
 # from sklearn.preprocessing import StandardScaler
 from utils.tools import convert_tsf_to_dataframe
@@ -111,74 +103,6 @@ def generate_graphs_tmp(dates, country):
         Gs.append(G)
         
     return Gs
-
-
-def _build_graph_from_weight_matrix(adj, node_names, fill_missing_weight=1.0):
-    n = len(node_names)
-    if adj.shape != (n, n):
-        raise ValueError(f"Adjacency shape {adj.shape} does not match node count {n}.")
-    G = nx.DiGraph()
-    G.add_nodes_from(node_names)
-    for i, src in enumerate(node_names):
-        for j, dst in enumerate(node_names):
-            weight = float(adj[i][j])
-            if weight == 0:
-                weight = float(fill_missing_weight)
-            G.add_edge(src, dst, weight=weight)
-    return G
-
-
-def read_meta_datasets_ca(
-    window,
-    root_path,
-    data_path,
-    graph_mode='empirical',
-    gravity_alpha=1.0,
-    gravity_beta=1.0,
-    gravity_gamma=2.0,
-):
-    json_path = os.path.join(root_path, data_path)
-    with open(json_path, 'r', encoding='utf-8') as f:
-        payload = json.load(f)
-
-    nodes = payload.get("node", [])
-    dates = payload.get("time", [])
-    cases = np.asarray(payload.get("case", []), dtype=float)
-    if cases.shape != (len(dates), len(nodes)):
-        raise ValueError("California cases shape does not match time/node lengths.")
-
-    labels = pd.DataFrame(cases, index=dates, columns=nodes).T
-
-    if graph_mode == 'empirical':
-        adj = adjacency_from_payload(payload)
-    elif graph_mode == 'gravity':
-        _, region_df, _ = load_region_dataframe(root_path=root_path, data_path=data_path)
-        population = get_population_vector(region_df, payload=payload)
-        adj = build_gravity_weight_matrix(
-            region_df,
-            population,
-            alpha=gravity_alpha,
-            beta=gravity_beta,
-            gamma=gravity_gamma,
-        )
-    elif graph_mode == 'distance':
-        _, region_df, _ = load_region_dataframe(root_path=root_path, data_path=data_path)
-        adj = build_distance_weight_matrix(region_df)
-    else:
-        raise ValueError(
-            f'Unsupported graph_mode `{graph_mode}` for JSON epidemic datasets.'
-        )
-
-    G = _build_graph_from_weight_matrix(adj, nodes, fill_missing_weight=1.0)
-    Gs = [G] * len(dates)
-    adj_matrix = nx.adjacency_matrix(G).toarray().T
-    gs_adj = [adj_matrix.copy() for _ in dates]
-
-    features = generate_new_features(Gs, labels, dates, window)
-    y = []
-    for i, _ in enumerate(Gs):
-        y.append([labels.loc[node, dates[i]] for node in G.nodes()])
-    return labels, gs_adj, features, y
 
 
 def read_meta_datasets_i(window,root_path,data_path):
@@ -293,18 +217,7 @@ class StandardScaler:
 
 
 class Dataset_EpiGNN(Dataset):
-    def __init__(
-        self,
-        root_path,
-        flag='train',
-        size=None,
-        data_path='italy_labels.csv',
-        scale=False,
-        graph_mode='empirical',
-        gravity_alpha=1.0,
-        gravity_beta=1.0,
-        gravity_gamma=2.0,
-    ):
+    def __init__(self, root_path, flag='train', size=None, data_path='italy_labels.csv', scale=False):
         """
         时空序列数据集类
         
@@ -324,10 +237,6 @@ class Dataset_EpiGNN(Dataset):
             self.token_len = size[3]
         self.root_path = root_path
         self.data_path = data_path
-        self.graph_mode = graph_mode
-        self.gravity_alpha = gravity_alpha
-        self.gravity_beta = gravity_beta
-        self.gravity_gamma = gravity_gamma
        
         # 数据校验
         if self.data_path == "italy_labels.csv":
@@ -350,27 +259,6 @@ class Dataset_EpiGNN(Dataset):
                 meta_labs, meta_graphs, meta_features, meta_y = read_meta_datasets_es(self.seq_len,self.root_path,self.data_path)
             else:
                 meta_labs, meta_graphs, meta_features, meta_y = read_meta_datasets_es(self.seq_len,self.root_path,self.data_path)
-        elif self.data_path.lower().endswith('.json'):
-            if flag != 'test':
-                meta_labs, meta_graphs, meta_features, meta_y = read_meta_datasets_ca(
-                    self.seq_len,
-                    self.root_path,
-                    self.data_path,
-                    graph_mode=self.graph_mode,
-                    gravity_alpha=self.gravity_alpha,
-                    gravity_beta=self.gravity_beta,
-                    gravity_gamma=self.gravity_gamma,
-                )
-            else:
-                meta_labs, meta_graphs, meta_features, meta_y = read_meta_datasets_ca(
-                    self.seq_len,
-                    self.root_path,
-                    self.data_path,
-                    graph_mode=self.graph_mode,
-                    gravity_alpha=self.gravity_alpha,
-                    gravity_beta=self.gravity_beta,
-                    gravity_gamma=self.gravity_gamma,
-                )
         meta_graphs = torch.tensor(meta_graphs)
         meta_graphs[:] = meta_graphs[:] / meta_graphs[:].max()  # 归一化到[0, 1]
         meta_features = torch.tensor(meta_features)

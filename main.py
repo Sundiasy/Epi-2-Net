@@ -30,20 +30,7 @@ def main(args):
     print("Generating Adjacency Matrix")
     seed = 2035
     set_seed(seed) 
-    adj_mx = get_adj(
-        args.country,
-        root_path=args.root_path,
-        data_path=args.data_path,
-        graph_mode=args.prior_graph_mode,
-        gravity_alpha=args.gravity_alpha,
-        gravity_beta=args.gravity_beta,
-        gravity_gamma=args.gravity_gamma,
-    )
-    args.node_num = int(adj_mx.shape[0])
-    print(
-        f"Country={args.country}, prior_graph_mode={args.prior_graph_mode}, "
-        f"mobility_graph_mode={args.mobility_graph_mode}, nodes={args.node_num}"
-    )
+    adj_mx = get_adj('Italy')
     rmse_list, mae_list, mape_list, preds_list, truths_list = [], [], [], [], []
     for exp_idx in range(args.exp_repeat):
         print('\nNo.%2d experiment ~~~' % exp_idx)
@@ -75,7 +62,7 @@ def main(args):
     np.savez_compressed(args.output_filename, **outputs)
     print('Mean predictions saved as {}.'.format(args.output_filename))
    
-    seq_len = [5,10]
+    seq_len = [3,5,7]
     print('--------- Epi2Net Final Results ------------' )
     for i, seq in enumerate(seq_len):
         print('Evaluation seq {}:'.format(seq))
@@ -104,16 +91,10 @@ if __name__ == '__main__':
     parser.add_argument('--use_cpu_only', default=False, type=bool, help='Set to true to only use cpu.')
     parser.add_argument('--exp_repeat', type=int, default=1, help='Number of experiments.')
     parser.add_argument('--data', type=str,  default='epidataset', help='dataset type')
-    parser.add_argument('--country', type=str, default='California', help='dataset country/region group')
-    parser.add_argument('--root_path', type=str, default='./dataset/California/', help='root path of the data file')
-    parser.add_argument('--data_path', type=str, default='COVIDinCalifornia.json', help='data file') # COVIDinCalifornia.json
-    parser.add_argument('--node_num', type=int, default=14, help='data node number') # france 81, italy 105, spain 34, england 129 california 58 massachusetts 14
-    parser.add_argument('--prior_graph_mode', type=str, default='distance', choices=['distance', 'gravity', 'empirical'], help='static prior graph used by adj_mx')
-    parser.add_argument('--mobility_graph_mode', type=str, default='empirical', choices=['empirical', 'gravity', 'distance'], help='dynamic graph mode used by Dataset_EpiGNN')
-    parser.add_argument('--gravity_alpha', type=float, default=1.0, help='gravity model source population exponent')
-    parser.add_argument('--gravity_beta', type=float, default=1.0, help='gravity model target population exponent')
-    parser.add_argument('--gravity_gamma', type=float, default=2.0, help='gravity model distance decay exponent')
-    # parser.add_argument('--test_data_path', type=str, default='italy_labels.csv', help='test data file used in zero shot forecasting')
+    parser.add_argument('--root_path', type=str, default='./dataset/Italy/', help='root path of the data file')
+    parser.add_argument('--data_path', type=str, default='italy_labels.csv', help='data file')
+    parser.add_argument('--node_num', type=int, default=105, help='data node number') # france 81, italy 105, spain 34, england 129
+    parser.add_argument('--test_data_path', type=str, default='italy_labels.csv', help='test data file used in zero shot forecasting')
     parser.add_argument('--checkpoints', type=str, default='./checkpoints/', help='location of model checkpoints')
 
     # forecasting task
